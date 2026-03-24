@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo, useRef, useState, type FormEvent } from "react";
+import { useMemo, useRef, useState, type SubmitEvent } from "react";
 
 type FormState = {
   status: string;
@@ -14,6 +14,8 @@ type FormState = {
   purchase: string;
   odometer: string;
   vin: string;
+  range: string;
+  checkbox: string;
 };
 
 const emptyState: FormState = {
@@ -28,6 +30,8 @@ const emptyState: FormState = {
   purchase: "",
   odometer: "",
   vin: "",
+  range: "",
+  checkbox: "",
 };
 
 export default function Home() {
@@ -53,6 +57,8 @@ export default function Home() {
         { key: "purchase", label: "Purchase", type: "number", step: "any" },
         { key: "odometer", label: "Odometer", type: "number", step: "1" },
         { key: "vin", label: "VIN", type: "text" },
+        { key: "range", label:"Range", type: "range"},
+        { key: "checkbox", label:"Checkbox", type: "checkbox"},
       ] as const,
     [],
   );
@@ -62,7 +68,7 @@ export default function Home() {
     setForm((prev) => ({ ...prev, [key]: value }));
   }
 
-  function onSubmit(e: FormEvent<HTMLFormElement>) {
+  function onSubmit(e: SubmitEvent<HTMLFormElement>) {
     e.preventDefault();
     setSuccess(true);
     setForm(emptyState);
@@ -112,23 +118,37 @@ export default function Home() {
                   >
                     {f.label}
                   </label>
-                  <input
-                    id={f.key}
-                    name={f.key}
-                    type={f.type}
-                    value={form[f.key]}
-                    onChange={(e) => onChange(f.key, e.target.value)}
-                    step={"step" in f ? f.step : undefined}
-                    inputMode={
-                      f.type === "number"
-                        ? "step" in f && f.step === "1"
-                          ? "numeric"
-                          : "decimal"
-                        : undefined
-                    }
-                    autoComplete="off"
-                    className="h-11 w-full rounded-md border border-zinc-300 bg-white px-3 text-sm text-zinc-900 shadow-sm outline-none ring-0 placeholder:text-zinc-400 focus:border-zinc-900 focus:ring-2 focus:ring-zinc-900/10"
-                  />
+                  {f.key !== "trim" ? 
+                    <input
+                      id={f.key}
+                      name={f.key}
+                      type={f.type}
+                      value={form[f.key]}
+                      onChange={(e) => onChange(f.key, e.target.value)}
+                      step={"step" in f ? f.step : undefined}
+                      inputMode={
+                        f.type === "number"
+                          ? "step" in f && f.step === "1"
+                            ? "numeric"
+                            : "decimal"
+                          : undefined
+                      }
+                      autoComplete="off"
+                      className="h-11 w-full rounded-md border border-zinc-300 bg-white px-3 text-sm text-zinc-900 shadow-sm outline-none ring-0 placeholder:text-zinc-400 focus:border-zinc-900 focus:ring-2 focus:ring-zinc-900/10"
+                    />
+                  :
+                    <select 
+                      id={f.key} 
+                      name={f.key}
+                      className="h-11 w-full rounded-md border border-zinc-300 bg-white px-3 text-sm text-zinc-900 shadow-sm outline-none ring-0 placeholder:text-zinc-400 focus:border-zinc-900 focus:ring-2 focus:ring-zinc-900/10"
+                      autoComplete="off"
+                    >
+                      <option value="" disabled={true}>--Please choose an option--</option>
+                      <option value={"Cloth"}>Cloth</option>
+                      <option value={"Leather"}>Leather</option>
+                      <option value={"Unknown"}>Unknown</option>
+                    </select>
+                  }
                 </div>
               ))}
             </div>
